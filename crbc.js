@@ -23,12 +23,12 @@ service:[
 ["Razvod","VIN / tržište","Ne prikazivati jedan univerzalni interval dok nije potvrđen za konkretnu servisnu specifikaciju."]
 ],
 liveData:[
-["Pritisak ulja • niski stepen","1.8–2.0 bar","Ciljna vrednost pumpe EA288; kod dijagnostike greške pritiska potvrdi vrednost mehaničkim manometrom."],
-["Pritisak ulja • visoki stepen","3.8–4.2 bar","Ciljna vrednost pumpe EA288; aktivni stepen zavisi od opterećenja, obrtaja i temperature ulja."],
+["Oil pressure • low stage","1.8–2.0 bar","Ciljna vrednost pumpe EA288; kod dijagnostike greške pritiska potvrdi vrednost mehaničkim manometrom."],
+["Oil pressure • high stage","3.8–4.2 bar","Ciljna vrednost pumpe EA288; aktivni stepen zavisi od opterećenja, obrtaja i temperature ulja."],
 ["F378 reduced oil-pressure switch","otvara ispod 0,3–0,6 bar","Ako se signal upozorenja ne poklapa sa mehanički izmerenim pritiskom, proveri prekidač i instalaciju."],
 ["F1 oil-pressure switch","zatvara na 2,3–3,0 bar","ECU koristi ovaj signal za potvrdu da je pritisak iznad niskog stepena."],
-["Dovodni pritisak goriva","3.5–5.0 bar","Niskopritisna dovodna strana; proveriti pre sumnje na visokopritisnu pumpu ili Common Rail sistem."],
-["Povrat goriva sa dizni","0.4–1.0 bar","Ventil za održavanje pritiska drži povratni vod približno na 1 bar."],
+["Fuel supply pressure","3.5–5.0 bar","Niskopritisna dovodna strana; proveriti pre sumnje na visokopritisnu pumpu ili Common Rail sistem."],
+["Injector return circuit","0.4–1.0 bar","Ventil za održavanje pritiska drži povratni vod približno na 1 bar."],
 ["Rail pressure • G247","Zadata / stvarna vrednost","Uporedi tokom verglanja, ler-a i opterećenja; ne postoji jedna univerzalna vrednost pritiska za sve režime rada."],
 ["MAF • G70","Zadata / stvarna vrednost / trend","Posmatraj zajedno sa komandom EGR-a i trenutnim režimom rada motora."],
 ["Boost • G31","Zadata / stvarna vrednost","Loguj zajedno sa N75 i G581 pod kontrolisanim opterećenjem; procenjuj odstupanje zadate i stvarne vrednosti, a ne jednu univerzalnu vrednost pritiska punjenja."],
