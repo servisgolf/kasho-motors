@@ -22,5 +22,20 @@ service:[
 ["0D9 / DQ250","Varijanta vozila","Interval, tačnu količinu i proceduru prikazati tek kada su potvrđeni za konkretnu EU konfiguraciju."],
 ["Razvod","VIN / tržište","Ne prikazivati jedan univerzalni interval dok nije potvrđen za konkretnu servisnu specifikaciju."]
 ],
+liveData:[
+["Oil pressure • low stage","1.8–2.0 bar","EA288 pump target stage; measure mechanically when diagnosing pressure faults."],
+["Oil pressure • high stage","3.8–4.2 bar","EA288 pump target stage; operating state depends on load, rpm and oil temperature."],
+["F378 reduced oil-pressure switch","opens below 0.3–0.6 bar","If warning logic disagrees with mechanical pressure, check switch/wiring."],
+["F1 oil-pressure switch","closes at 2.3–3.0 bar","Used by ECM to confirm pressure above low-pressure stage."],
+["Fuel supply pressure","3.5–5.0 bar","Low-pressure feed side; useful before condemning HP pump/rail system."],
+["Injector return circuit","0.4–1.0 bar","Pressure-holding valve keeps return near 1 bar."],
+["Rail pressure • G247","Specified vs Actual","Evaluate during crank, idle and load; no single universal pressure is valid for every operating state."],
+["MAF • G70","Specified vs Actual / trend","Evaluate together with EGR command and operating state."],
+["Boost • G31","Specified vs Actual","Log with N75 and G581 under controlled load; evaluate deviation, not a universal boost number."],
+["Charge-air temp • G811","Trend after intercooler","Compare with G42 and load; useful for charge-air cooling diagnosis."],
+["DPF differential pressure • G505","Trend vs exhaust mass flow","Interpret together with soot/ash model and exhaust temperatures."],
+["EGT • G235/G495/G648","Trend / regeneration state","Use sensor plausibility and temperature sequence; values depend strongly on load/regeneration."],
+["EGR position • G466","Command vs feedback","Correlate with MAF response and throttle operation."]
+],
 source:"Volkswagen SSP 513 / SSP 514",verified:true
 };
