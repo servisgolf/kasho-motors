@@ -23,19 +23,19 @@ service:[
 ["Razvod","VIN / tržište","Ne prikazivati jedan univerzalni interval dok nije potvrđen za konkretnu servisnu specifikaciju."]
 ],
 liveData:[
-["Oil pressure • low stage","1.8–2.0 bar","EA288 pump target stage; measure mechanically when diagnosing pressure faults."],
-["Oil pressure • high stage","3.8–4.2 bar","EA288 pump target stage; operating state depends on load, rpm and oil temperature."],
-["F378 reduced oil-pressure switch","opens below 0.3–0.6 bar","If warning logic disagrees with mechanical pressure, check switch/wiring."],
-["F1 oil-pressure switch","closes at 2.3–3.0 bar","Used by ECM to confirm pressure above low-pressure stage."],
-["Fuel supply pressure","3.5–5.0 bar","Low-pressure feed side; useful before condemning HP pump/rail system."],
-["Injector return circuit","0.4–1.0 bar","Pressure-holding valve keeps return near 1 bar."],
-["Rail pressure • G247","Specified vs Actual","Evaluate during crank, idle and load; no single universal pressure is valid for every operating state."],
-["MAF • G70","Specified vs Actual / trend","Evaluate together with EGR command and operating state."],
-["Boost • G31","Specified vs Actual","Log with N75 and G581 under controlled load; evaluate deviation, not a universal boost number."],
-["Charge-air temp • G811","Trend after intercooler","Compare with G42 and load; useful for charge-air cooling diagnosis."],
-["DPF differential pressure • G505","Trend vs exhaust mass flow","Interpret together with soot/ash model and exhaust temperatures."],
-["EGT • G235/G495/G648","Trend / regeneration state","Use sensor plausibility and temperature sequence; values depend strongly on load/regeneration."],
-["EGR position • G466","Command vs feedback","Correlate with MAF response and throttle operation."]
+["Pritisak ulja • niski stepen","1.8–2.0 bar","Ciljna vrednost pumpe EA288; kod dijagnostike greške pritiska potvrdi vrednost mehaničkim manometrom."],
+["Pritisak ulja • visoki stepen","3.8–4.2 bar","Ciljna vrednost pumpe EA288; aktivni stepen zavisi od opterećenja, obrtaja i temperature ulja."],
+["F378 reduced oil-pressure switch","otvara ispod 0,3–0,6 bar","Ako se signal upozorenja ne poklapa sa mehanički izmerenim pritiskom, proveri prekidač i instalaciju."],
+["F1 oil-pressure switch","zatvara na 2,3–3,0 bar","ECU koristi ovaj signal za potvrdu da je pritisak iznad niskog stepena."],
+["Dovodni pritisak goriva","3.5–5.0 bar","Niskopritisna dovodna strana; proveriti pre sumnje na visokopritisnu pumpu ili Common Rail sistem."],
+["Povrat goriva sa dizni","0.4–1.0 bar","Ventil za održavanje pritiska drži povratni vod približno na 1 bar."],
+["Rail pressure • G247","Zadata / stvarna vrednost","Uporedi tokom verglanja, ler-a i opterećenja; ne postoji jedna univerzalna vrednost pritiska za sve režime rada."],
+["MAF • G70","Zadata / stvarna vrednost / trend","Posmatraj zajedno sa komandom EGR-a i trenutnim režimom rada motora."],
+["Boost • G31","Zadata / stvarna vrednost","Loguj zajedno sa N75 i G581 pod kontrolisanim opterećenjem; procenjuj odstupanje zadate i stvarne vrednosti, a ne jednu univerzalnu vrednost pritiska punjenja."],
+["Charge-air temp • G811","Trend posle hladnjaka punjenja","Uporedi sa G42 i opterećenjem motora; korisno za proveru efikasnosti hlađenja usisnog vazduha."],
+["DPF differential pressure • G505","Trend u odnosu na protok izduvnih gasova","Tumači zajedno sa izračunatom količinom čađi/pepela i temperaturama izduvnih gasova."],
+["EGT • G235/G495/G648","Trend / stanje regeneracije","Proveri logičnost senzora i redosled temperatura; vrednosti snažno zavise od opterećenja i stanja regeneracije."],
+["EGR position • G466","Komanda / stvarni položaj","Uporedi sa promenom MAF-a i radom usisne klapne."]
 ],
 symptoms:[
 {title:"Underboost / slab boost",steps:["Sačuvaj DTC + freeze frame; ne briši greške pre logovanja.","Loguj G31 boost specified/actual zajedno sa N75 i G581 položajem aktuatora pod kontrolisanim opterećenjem.","Proveri charge-air put: creva, spojeve, intercooler/usisni modul i tragove curenja.","Ako komanda aktuatora i stvarni položaj odstupaju, proveri aktuator/ožičenje i mehaniku turbine.","Ako aktuator prati komandu, a boost ostaje nizak, proveri curenje, izduv pre turbine i sposobnost turbine da napravi protok/pritisak."]},
