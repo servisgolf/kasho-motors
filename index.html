@@ -7,3 +7,4 @@ function card(x,type){let vals=Object.values(x).filter(Boolean).map(String), tit
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))} function render(){let data,type;if(view==='models'){data=KASHO_DATA.Models;type='models'}else if(view==='trans'){data=KASHO_DATA.Transmissions;type='trans'}else{data=fav().map(JSON.parse);type='models'}let s=q.value.trim().toLowerCase();if(s)data=data.filter(x=>Object.values(x).join(' ').toLowerCase().includes(s));count.textContent=`${data.length} rezultata`;list.innerHTML=data.length?data.map(x=>card(x,type)).join(''):'<div class="empty">Nema rezultata.</div>'}
 q.addEventListener('input',render);document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.view;render()});if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');render();
 </script></body></html>
+
