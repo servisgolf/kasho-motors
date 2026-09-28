@@ -25,17 +25,17 @@ service:[
 liveData:[
 ["Oil pressure • low stage","1.8–2.0 bar","Ciljna vrednost pumpe EA288; kod dijagnostike greške pritiska potvrdi vrednost mehaničkim manometrom."],
 ["Oil pressure • high stage","3.8–4.2 bar","Ciljna vrednost pumpe EA288; aktivni stepen zavisi od opterećenja, obrtaja i temperature ulja."],
-["F378 reduced oil-pressure switch","otvara ispod 0,3–0,6 bar","Ako se signal upozorenja ne poklapa sa mehanički izmerenim pritiskom, proveri prekidač i instalaciju."],
-["F1 oil-pressure switch","zatvara na 2,3–3,0 bar","ECU koristi ovaj signal za potvrdu da je pritisak iznad niskog stepena."],
+["F378 reduced oil-pressure switch","opens below 0.3–0.6 bar","Ako se signal upozorenja ne poklapa sa mehanički izmerenim pritiskom, proveri prekidač i instalaciju."],
+["F1 oil-pressure switch","closes at 2.3–3.0 bar","ECU koristi ovaj signal za potvrdu da je pritisak iznad niskog stepena."],
 ["Fuel supply pressure","3.5–5.0 bar","Niskopritisna dovodna strana; proveriti pre sumnje na visokopritisnu pumpu ili Common Rail sistem."],
 ["Injector return circuit","0.4–1.0 bar","Ventil za održavanje pritiska drži povratni vod približno na 1 bar."],
-["Rail pressure • G247","Zadata / stvarna vrednost","Uporedi tokom verglanja, ler-a i opterećenja; ne postoji jedna univerzalna vrednost pritiska za sve režime rada."],
-["MAF • G70","Zadata / stvarna vrednost / trend","Posmatraj zajedno sa komandom EGR-a i trenutnim režimom rada motora."],
-["Boost • G31","Zadata / stvarna vrednost","Loguj zajedno sa N75 i G581 pod kontrolisanim opterećenjem; procenjuj odstupanje zadate i stvarne vrednosti, a ne jednu univerzalnu vrednost pritiska punjenja."],
-["Charge-air temp • G811","Trend posle hladnjaka punjenja","Uporedi sa G42 i opterećenjem motora; korisno za proveru efikasnosti hlađenja usisnog vazduha."],
-["DPF differential pressure • G505","Trend u odnosu na protok izduvnih gasova","Tumači zajedno sa izračunatom količinom čađi/pepela i temperaturama izduvnih gasova."],
-["EGT • G235/G495/G648","Trend / stanje regeneracije","Proveri logičnost senzora i redosled temperatura; vrednosti snažno zavise od opterećenja i stanja regeneracije."],
-["EGR position • G466","Komanda / stvarni položaj","Uporedi sa promenom MAF-a i radom usisne klapne."]
+["Rail pressure • G247","Specified / Actual","Uporedi tokom verglanja, ler-a i opterećenja; ne postoji jedna univerzalna vrednost pritiska za sve režime rada."],
+["MAF • G70","Specified / Actual / trend","Posmatraj zajedno sa komandom EGR-a i trenutnim režimom rada motora."],
+["Boost • G31","Specified / Actual","Loguj zajedno sa N75 i G581 pod kontrolisanim opterećenjem; procenjuj odstupanje zadate i stvarne vrednosti, a ne jednu univerzalnu vrednost pritiska punjenja."],
+["Charge-air temp • G811","Trend after intercooler","Uporedi sa G42 i opterećenjem motora; korisno za proveru efikasnosti hlađenja usisnog vazduha."],
+["DPF differential pressure • G505","Trend vs exhaust mass flow","Tumači zajedno sa izračunatom količinom čađi/pepela i temperaturama izduvnih gasova."],
+["EGT • G235/G495/G648","Trend / regeneration state","Proveri logičnost senzora i redosled temperatura; vrednosti snažno zavise od opterećenja i stanja regeneracije."],
+["EGR position • G466","Command / Feedback","Uporedi sa promenom MAF-a i radom usisne klapne."]
 ],
 symptoms:[
 {title:"Underboost / slab boost",steps:["Sačuvaj DTC + freeze frame; ne briši greške pre logovanja.","Loguj G31 boost specified/actual zajedno sa N75 i G581 položajem aktuatora pod kontrolisanim opterećenjem.","Proveri charge-air put: creva, spojeve, intercooler/usisni modul i tragove curenja.","Ako komanda aktuatora i stvarni položaj odstupaju, proveri aktuator/ožičenje i mehaniku turbine.","Ako aktuator prati komandu, a boost ostaje nizak, proveri curenje, izduv pre turbine i sposobnost turbine da napravi protok/pritisak."]},
