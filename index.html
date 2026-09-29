@@ -10,7 +10,16 @@ body{padding-bottom:118px}
 .v3nav.active svg{color:#ef4444}
 .v3nav:active{transform:scale(.97)}
 @media(max-width:430px){.v3dock{width:calc(100% - 20px);bottom:max(9px,env(safe-area-inset-bottom));border-radius:27px}.v3nav{height:62px;border-radius:21px;font-size:10px}.v3nav svg{width:23px;height:23px}}
-</style></head><body><div class="wrap"><header><div class="brand">KASHO <b>TECH</b></div><div class="pill">0.1 • VW EU</div></header><div id="home"><section class="hero"><h1>Servisna baza</h1><p>Pretraži model, platformu, oznaku ili menjač.</p><input id="q" class="search" placeholder="npr. Golf VII, MQB, 0GC, DQ381…" autocomplete="off"></section><div class="tabs"><button class="tab active" data-view="models">Vozila</button><button class="tab" data-view="trans">Menjači</button><button class="tab" data-view="fav">★ Favorites</button></div><div id="count" class="count"></div><main id="list"></main></div><main id="detail" class="hidden"></main></div><div class="footer">KASHO TECH 0.1 • offline-ready</div><script src="data.js"></script><script src="profiles.js"></script><script src="crbc.js"></script><script>
+
+.brandIntro{margin:8px 0 18px}.brandIntro h1{font-size:28px;margin:0 0 6px}.brandIntro p{margin:0;color:#8e98a7;font-size:14px}
+.brandGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.brandCard{appearance:none;border:1px solid #292f37;background:#14181d;color:#fff;border-radius:20px;min-height:150px;padding:18px 12px 15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.12);transition:.16s ease}
+.brandCard:active{transform:scale(.98);background:#181d23}.brandLogo{height:64px;display:flex;align-items:center;justify-content:center;color:#e8ebef}
+.brandLogo svg{width:68px;height:68px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.brandLogo.audi svg{width:102px}.brandLogo.skoda{font-size:26px;font-weight:850;letter-spacing:-1px}.brandLogo.seat{font-size:31px;font-weight:850;letter-spacing:2px}.brandLogo.cupra{font-size:23px;font-weight:850;letter-spacing:3px}
+.brandName{font-size:13px;font-weight:750;color:#b9c1cc}.brandModelsHead{display:flex;align-items:center;gap:12px;margin:6px 0 16px}.brandModelsHead h1{font-size:25px;margin:0}.brandBack{appearance:none;border:1px solid #2a3038;background:#15191e;color:#cbd2dc;border-radius:12px;padding:9px 12px;font-weight:700}
+@media(min-width:620px){.brandGrid{grid-template-columns:repeat(3,1fr)}}
+</style></head><body><div class="wrap"><header><div class="brand">KASHO <b>TECH</b></div><div class="pill">0.1 • VW EU</div></header><div id="home"><div id="brandHome"></div><section class="hero" id="legacyHero"><h1>Servisna baza</h1><p>Pretraži model, platformu, oznaku ili menjač.</p><input id="q" class="search" placeholder="npr. Golf VII, MQB, 0GC, DQ381…" autocomplete="off"></section><div class="tabs" id="legacyTabs"><button class="tab active" data-view="models">Vozila</button><button class="tab" data-view="trans">Menjači</button><button class="tab" data-view="fav">★ Favorites</button></div><div id="count" class="count"></div><main id="list"></main></div><main id="detail" class="hidden"></main></div><div class="footer">KASHO TECH 0.1 • offline-ready</div><script src="data.js"></script><script src="profiles.js"></script><script src="crbc.js"></script><script>
 let view='models';const q=document.querySelector('#q'),list=document.querySelector('#list'),count=document.querySelector('#count'),home=document.querySelector('#home'),detail=document.querySelector('#detail');
 const fav=()=>JSON.parse(localStorage.getItem('kashoFav')||'[]');function key(x){return JSON.stringify(x)}function toggle(x){let a=fav(),k=key(x);a=a.includes(k)?a.filter(v=>v!==k):[...a,k];localStorage.setItem('kashoFav',JSON.stringify(a));render()}
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
@@ -26,14 +35,39 @@ function render(){let data,type;if(view==='models'){data=KASHO_DATA.Models;type=
 q.addEventListener('input',render);document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.view;render()});if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');render();
 
 
+
+const brandHome=document.querySelector('#brandHome'),legacyHero=document.querySelector('#legacyHero'),legacyTabs=document.querySelector('#legacyTabs');
+const VAG_BRANDS=[
+ {id:'vw',name:'Volkswagen',logo:'<svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="29"/><path d="M17 19l19 38 19-38M24 19l12 24 12-24M18 43h36"/></svg>'},
+ {id:'audi',name:'Audi',cls:'audi',logo:'<svg viewBox="0 0 120 48"><circle cx="25" cy="24" r="16"/><circle cx="48" cy="24" r="16"/><circle cx="71" cy="24" r="16"/><circle cx="94" cy="24" r="16"/></svg>'},
+ {id:'skoda',name:'Škoda',cls:'skoda',logo:'ŠKODA'},
+ {id:'seat',name:'SEAT',cls:'seat',logo:'SEAT'},
+ {id:'cupra',name:'CUPRA',cls:'cupra',logo:'CUPRA'}
+];
+function brandSelector(){
+ localStorage.removeItem('kashoBrand');history.replaceState(null,'',location.pathname+location.search);
+ detail.classList.add('hidden');home.classList.remove('hidden');brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');legacyTabs.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
+ brandHome.innerHTML='<section class="brandIntro"><h1>Vozila</h1><p>Izaberi marku vozila.</p><div class="brandGrid">'+VAG_BRANDS.map(b=>'<button class="brandCard" onclick="openBrand(\''+b.id+'\')"><div class="brandLogo '+(b.cls||'')+'">'+b.logo+'</div><div class="brandName">'+b.name+'</div></button>').join('')+'</div></section>';setV3Active('models');window.scrollTo(0,0)
+}
+function openBrand(id){
+ localStorage.setItem('kashoBrand',id);brandHome.classList.add('hidden');legacyHero.classList.remove('hidden');legacyTabs.classList.add('hidden');count.classList.remove('hidden');list.classList.remove('hidden');
+ const b=VAG_BRANDS.find(x=>x.id===id);legacyHero.querySelector('h1').textContent=b.name;legacyHero.querySelector('p').textContent='Modeli • evropsko tržište';
+ if(id==='vw'){view='models';render();count.textContent=count.textContent.replace(' rezultata',' modela');}
+ else{count.textContent='0 modela';list.innerHTML='<div class="empty">Modeli za '+b.name+' biće dodati u sledećoj fazi baze.</div>'}
+ legacyHero.insertAdjacentHTML('afterbegin','<button class="brandBack" onclick="brandSelector()">‹ Marke</button>');
+ window.scrollTo(0,0)
+}
+
 function setV3Active(k){document.querySelectorAll('.v3nav').forEach(b=>b.classList.toggle('active',b.dataset.v3===k))}
 function v3Go(k){
- if(k==='models'){closeDetail();view='models';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='models'));setV3Active('models');render();return}
+ if(k==='models'){brandSelector();return}
  if(k==='trans'){closeDetail();view='trans';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='trans'));setV3Active('trans');render();return}
  if(k==='search'){closeDetail();setV3Active('search');setTimeout(()=>{q.focus();q.scrollIntoView({behavior:'smooth',block:'center'})},80);return}
  if(k==='engines'){setV3Active('engines');openCRBC();window.scrollTo({top:0,behavior:'smooth'});return}
 }
 
+
+if(!location.hash)brandSelector();
 restoreRoute();
 </script><nav class="v3dock" id="v3dock" aria-label="Glavna navigacija">
 <button class="v3nav active" data-v3="models" onclick="v3Go('models')"><svg viewBox="0 0 24 24"><path d="M3 14l2-5.5A2 2 0 0 1 6.9 7h10.2A2 2 0 0 1 19 8.5L21 14v5h-2v-2H5v2H3z"/><path d="M5 13h14M7 14.5h.01M17 14.5h.01"/></svg><span>Vozila</span></button>
