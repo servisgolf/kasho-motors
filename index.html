@@ -15,8 +15,7 @@ body{padding-bottom:118px}
 .brandGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
 .brandCard{appearance:none;border:1px solid #292f37;background:#14181d;color:#fff;border-radius:20px;min-height:150px;padding:18px 12px 15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.12);transition:.16s ease}
 .brandCard:active{transform:scale(.98);background:#181d23}.brandLogo{height:64px;display:flex;align-items:center;justify-content:center;color:#e8ebef}
-.brandLogo svg{width:68px;height:68px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
-.brandLogo.audi svg{width:102px}.brandLogo.skoda{font-size:26px;font-weight:850;letter-spacing:-1px}.brandLogo.seat{font-size:31px;font-weight:850;letter-spacing:2px}.brandLogo.cupra{font-size:23px;font-weight:850;letter-spacing:3px}
+.brandLogo img{display:block;width:76px;height:76px;object-fit:contain}.brandLogo.audi img{width:112px;height:70px}
 .brandName{font-size:13px;font-weight:750;color:#b9c1cc}.brandModelsHead{display:flex;align-items:center;gap:12px;margin:6px 0 16px}.brandModelsHead h1{font-size:25px;margin:0}.brandBack{appearance:none;border:1px solid #2a3038;background:#15191e;color:#cbd2dc;border-radius:12px;padding:9px 12px;font-weight:700}
 @media(min-width:620px){.brandGrid{grid-template-columns:repeat(3,1fr)}}
 
@@ -92,11 +91,11 @@ function audiCard(m){return '<article class="card"><div class="title">'+m[0]+'</
 function renderAudi(){count.textContent=AUDI_MODELS.length+' generacija';list.innerHTML=AUDI_MODELS.map(audiCard).join('')}
 
 const VAG_BRANDS=[
- {id:'vw',name:'Volkswagen',logo:'<svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="29"/><path d="M17 19l19 38 19-38M24 19l12 24 12-24M18 43h36"/></svg>'},
- {id:'audi',name:'Audi',cls:'audi',logo:'<svg viewBox="0 0 120 48"><circle cx="25" cy="24" r="16"/><circle cx="48" cy="24" r="16"/><circle cx="71" cy="24" r="16"/><circle cx="94" cy="24" r="16"/></svg>'},
- {id:'skoda',name:'Škoda',cls:'skoda',logo:'ŠKODA'},
- {id:'seat',name:'SEAT',cls:'seat',logo:'SEAT'},
- {id:'cupra',name:'CUPRA',cls:'cupra',logo:'CUPRA'}
+ {id:'vw',name:'Volkswagen',logo:'assets/volkswagen.png?v=1'},
+ {id:'audi',name:'Audi',cls:'audi',logo:'assets/audi.png?v=1'},
+ {id:'skoda',name:'Škoda',logo:'assets/skoda.png?v=1'},
+ {id:'seat',name:'SEAT',logo:'assets/seat.png?v=1'},
+ {id:'cupra',name:'CUPRA',logo:'assets/cupra.png?v=1'}
 ];
 function brandSelector(){
  localStorage.removeItem('kashoBrand');history.replaceState(null,'',location.pathname+location.search);
