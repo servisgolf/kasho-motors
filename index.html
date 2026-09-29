@@ -135,7 +135,8 @@ function openTransmission(id){
 }
 
 
-const searchOverlay=document.querySelector('#searchOverlay'),spotInput=document.querySelector('#spotInput'),spotResults=document.querySelector('#spotResults');
+let searchOverlay,spotInput,spotResults;
+function getSpotlightEls(){searchOverlay=document.querySelector('#searchOverlay');spotInput=document.querySelector('#spotInput');spotResults=document.querySelector('#spotResults')}
 function searchIndex(){
  let a=[];
  (KASHO_DATA.Models||[]).forEach(x=>{let v=Object.values(x).filter(Boolean).map(String);a.push({type:'VOZILO',title:v[0]||'Volkswagen',sub:v.slice(1,4).join(' • '),terms:v.join(' '),go:isGolf7(x)?'golf7':null})});
@@ -145,10 +146,11 @@ function searchIndex(){
  return a
 }
 function openSpotlight(){
+ getSpotlightEls();if(!searchOverlay||!spotInput||!spotResults)return;
  searchOverlay.classList.add('open');document.body.style.overflow='hidden';setV3Active('search');spotInput.value='';renderSpotlight('');
  setTimeout(()=>spotInput.focus(),80)
 }
-function closeSpotlight(){searchOverlay.classList.remove('open');document.body.style.overflow='';spotInput.blur()}
+function closeSpotlight(){getSpotlightEls();if(!searchOverlay)return;searchOverlay.classList.remove('open');document.body.style.overflow='';if(spotInput)spotInput.blur()}
 function renderSpotlight(v){
  const term=v.trim().toLowerCase();
  if(!term){spotResults.innerHTML='<div class="spotHint">Počni da kucaš — npr. <b>DQ200</b>, <b>0GC</b>, <b>CRBC</b> ili <b>Golf VII</b>.</div>';return}
@@ -157,8 +159,8 @@ function renderSpotlight(v){
  window._spotResults=r
 }
 function openSearchResult(i){const x=(window._spotResults||[])[i];if(!x)return;closeSpotlight();if(x.go==='golf7')openGolf7();else if(x.go==='crbc')openCRBC();else if(x.go&&x.go.startsWith('trans:'))openTransmission(x.go.split(':')[1])}
-spotInput.addEventListener('input',e=>renderSpotlight(e.target.value));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&searchOverlay.classList.contains('open'))closeSpotlight()});
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='spotInput')renderSpotlight(e.target.value)});
+document.addEventListener('keydown',e=>{const o=document.querySelector('#searchOverlay');if(e.key==='Escape'&&o&&o.classList.contains('open'))closeSpotlight()});
 
 function setV3Active(k){document.querySelectorAll('.v3nav').forEach(b=>b.classList.toggle('active',b.dataset.v3===k))}
 function v3Go(k){
