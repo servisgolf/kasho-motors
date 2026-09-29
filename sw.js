@@ -1,5 +1,5 @@
-const C='kasho-tech-v3-ui-11';
-const A=['./','index.html','data.js','profiles.js','crbc.js','manifest.webmanifest','icon.svg','assets/golf7-kasho-hero-v2.webp?v=17','assets/kasho-tech-logo.png?v=1'];
+const C='kasho-tech-v3-ui-12';
+const A=['./','index.html','data.js','profiles.js','crbc.js','manifest.webmanifest','icon.svg','assets/golf7-kasho-hero-v2.webp?v=17','assets/kasho-tech-logo.png?v=1','assets/volkswagen.png?v=1','assets/skoda.png?v=1','assets/seat.png?v=1','assets/cupra.png?v=1','assets/audi.png?v=1'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(A)))});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))),self.clients.claim()])));
 self.addEventListener('fetch',e=>{
