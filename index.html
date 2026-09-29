@@ -140,7 +140,15 @@ function getSpotlightEls(){searchOverlay=document.querySelector('#searchOverlay'
 function searchIndex(){
  let a=[];
  (KASHO_DATA.Models||[]).forEach(x=>{let v=Object.values(x).filter(Boolean).map(String);a.push({type:'VOZILO',title:v[0]||'Volkswagen',sub:v.slice(1,4).join(' • '),terms:v.join(' '),go:isGolf7(x)?'golf7':null})});
- TRANS_FAMILIES.forEach(t=>a.push({type:'MENJAČ',title:t.name,sub:t.codes+' • '+t.meta,terms:[t.name,t.codes,t.meta,t.drive].join(' '),go:'trans:'+t.id}));
+ [
+  ['dq200','DQ200','0AM / 0CW','7-stepeni DSG • suvo dvostruko kvačilo','Poprečni • FWD'],
+  ['dq250','DQ250','02E / 0D9','6-stepeni DSG • mokro dvostruko kvačilo','Poprečni • FWD / AWD'],
+  ['dq381','DQ381','0GC','7-stepeni DSG • mokro dvostruko kvačilo','Poprečni • FWD / AWD'],
+  ['dq500','DQ500','0BH / 0BT / 0DL','7-stepeni DSG • mokro dvostruko kvačilo','Poprečni • FWD / AWD'],
+  ['dq400e','DQ400e','0DD','6-stepeni DSG • PHEV','Poprečni • hibrid'],
+  ['dl501','DL501','0B5','7-stepeni S tronic • mokro dvostruko kvačilo','Uzdužni • quattro'],
+  ['dl382','DL382','0CK / 0CL / 0CJ / 0HL','7-stepeni S tronic • mokro dvostruko kvačilo','Uzdužni • FWD / quattro']
+ ].forEach(t=>a.push({type:'MENJAČ',title:t[1],sub:t[2]+' • '+t[3],terms:t.join(' '),go:'trans:'+t[0]}));
  a.push({type:'MOTOR',title:'CRBC',sub:'2.0 TDI • EA288 • 110 kW',terms:'CRBC 2.0 TDI EA288 110 kW Golf VII',go:'crbc'});
  AUDI_MODELS.forEach(m=>a.push({type:'VOZILO',title:'Audi '+m[0],sub:m[1]+' • '+m[2]+' • '+m[3],terms:m.join(' '),go:null}));
  return a
