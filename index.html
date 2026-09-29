@@ -25,6 +25,11 @@ body{padding-bottom:118px}
 .transCard{appearance:none;text-align:left;border:1px solid #292f37;background:#14181d;color:#fff;border-radius:20px;min-height:145px;padding:17px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.16s ease}
 .transCard:active{transform:scale(.98);background:#181d23}.transCode{font-size:25px;font-weight:850;letter-spacing:.2px}.transArrow{color:#ef4444}.transPart{font-size:13px;color:#c0c7d0;margin-top:4px}.transMeta{font-size:11px;color:#7f8996;line-height:1.4;margin-top:14px}.transBadge{display:inline-block;width:max-content;margin-top:8px;padding:4px 7px;border-radius:7px;background:#20252c;color:#aeb7c2;font-size:10px;font-weight:750}
 @media(min-width:620px){.transGrid{grid-template-columns:repeat(3,1fr)}}
+
+.searchOverlay{position:fixed;z-index:2000;inset:0;background:rgba(5,7,9,.58);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:calc(72px + env(safe-area-inset-top)) 14px 120px;opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s ease}
+.searchOverlay.open{opacity:1;visibility:visible}.spotlight{width:min(100%,650px);margin:0 auto;border:1px solid rgba(125,135,148,.3);border-radius:24px;background:rgba(20,24,29,.92);box-shadow:0 24px 70px rgba(0,0,0,.5);overflow:hidden}
+.spotHead{display:grid;grid-template-columns:27px 1fr 34px;gap:9px;align-items:center;padding:14px 14px;border-bottom:1px solid #292f37}.spotHead svg{width:23px;height:23px;fill:none;stroke:#8f99a7;stroke-width:1.8;stroke-linecap:round}.spotInput{width:100%;border:0;outline:0;background:transparent;color:#fff;font:inherit;font-size:17px}.spotInput::placeholder{color:#77818e}.spotClose{appearance:none;border:0;background:#282e36;color:#b9c1cc;width:32px;height:32px;border-radius:50%;font-size:20px;line-height:30px}
+.spotResults{max-height:min(55vh,520px);overflow:auto;padding:8px}.spotHint{padding:18px 14px;color:#7f8996;font-size:13px}.spotResult{appearance:none;width:100%;border:0;background:transparent;color:#fff;text-align:left;border-radius:15px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.spotResult:active{background:#20252c}.spotTitle{font-size:15px;font-weight:800}.spotSub{font-size:12px;color:#8f99a7;margin-top:4px}.spotType{font-size:9px;font-weight:850;letter-spacing:.8px;color:#ef4444;background:#2a181b;border:1px solid #432127;padding:5px 7px;border-radius:7px}.spotEmpty{padding:28px 14px;text-align:center;color:#7f8996;font-size:13px}
 </style></head><body><div class="wrap"><header><div class="brand">KASHO <b>TECH</b></div><div class="pill">0.1 • VW EU</div></header><div id="home"><div id="brandHome"></div><section class="hero" id="legacyHero"><h1>Servisna baza</h1><p>Pretraži model, platformu, oznaku ili menjač.</p><input id="q" class="search" placeholder="npr. Golf VII, MQB, 0GC, DQ381…" autocomplete="off"></section><div class="tabs" id="legacyTabs"><button class="tab active" data-view="models">Vozila</button><button class="tab" data-view="trans">Menjači</button><button class="tab" data-view="fav">★ Favorites</button></div><div id="count" class="count"></div><main id="list"></main></div><main id="detail" class="hidden"></main></div><div class="footer">KASHO TECH 0.1 • offline-ready</div><script src="data.js"></script><script src="profiles.js"></script><script src="crbc.js"></script><script>
 let view='models';const q=document.querySelector('#q'),list=document.querySelector('#list'),count=document.querySelector('#count'),home=document.querySelector('#home'),detail=document.querySelector('#detail');
 const fav=()=>JSON.parse(localStorage.getItem('kashoFav')||'[]');function key(x){return JSON.stringify(x)}function toggle(x){let a=fav(),k=key(x);a=a.includes(k)?a.filter(v=>v!==k):[...a,k];localStorage.setItem('kashoFav',JSON.stringify(a));render()}
@@ -129,18 +134,44 @@ function openTransmission(id){
  setV3Active('trans')
 }
 
+
+const searchOverlay=document.querySelector('#searchOverlay'),spotInput=document.querySelector('#spotInput'),spotResults=document.querySelector('#spotResults');
+function searchIndex(){
+ let a=[];
+ (KASHO_DATA.Models||[]).forEach(x=>{let v=Object.values(x).filter(Boolean).map(String);a.push({type:'VOZILO',title:v[0]||'Volkswagen',sub:v.slice(1,4).join(' • '),terms:v.join(' '),go:isGolf7(x)?'golf7':null})});
+ TRANS_FAMILIES.forEach(t=>a.push({type:'MENJAČ',title:t.name,sub:t.codes+' • '+t.meta,terms:[t.name,t.codes,t.meta,t.drive].join(' '),go:'trans:'+t.id}));
+ a.push({type:'MOTOR',title:'CRBC',sub:'2.0 TDI • EA288 • 110 kW',terms:'CRBC 2.0 TDI EA288 110 kW Golf VII',go:'crbc'});
+ AUDI_MODELS.forEach(m=>a.push({type:'VOZILO',title:'Audi '+m[0],sub:m[1]+' • '+m[2]+' • '+m[3],terms:m.join(' '),go:null}));
+ return a
+}
+function openSpotlight(){
+ searchOverlay.classList.add('open');document.body.style.overflow='hidden';setV3Active('search');spotInput.value='';renderSpotlight('');
+ setTimeout(()=>spotInput.focus(),80)
+}
+function closeSpotlight(){searchOverlay.classList.remove('open');document.body.style.overflow='';spotInput.blur()}
+function renderSpotlight(v){
+ const term=v.trim().toLowerCase();
+ if(!term){spotResults.innerHTML='<div class="spotHint">Počni da kucaš — npr. <b>DQ200</b>, <b>0GC</b>, <b>CRBC</b> ili <b>Golf VII</b>.</div>';return}
+ const r=searchIndex().filter(x=>(x.title+' '+x.sub+' '+x.terms).toLowerCase().includes(term)).slice(0,12);
+ spotResults.innerHTML=r.length?r.map((x,i)=>'<button class="spotResult" onclick="openSearchResult('+i+')"><div><div class="spotTitle">'+esc(x.title)+'</div><div class="spotSub">'+esc(x.sub)+'</div></div><span class="spotType">'+x.type+'</span></button>').join(''):'<div class="spotEmpty">Nema rezultata za „'+esc(v)+'“.</div>';
+ window._spotResults=r
+}
+function openSearchResult(i){const x=(window._spotResults||[])[i];if(!x)return;closeSpotlight();if(x.go==='golf7')openGolf7();else if(x.go==='crbc')openCRBC();else if(x.go&&x.go.startsWith('trans:'))openTransmission(x.go.split(':')[1])}
+spotInput.addEventListener('input',e=>renderSpotlight(e.target.value));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&searchOverlay.classList.contains('open'))closeSpotlight()});
+
 function setV3Active(k){document.querySelectorAll('.v3nav').forEach(b=>b.classList.toggle('active',b.dataset.v3===k))}
 function v3Go(k){
  if(k==='models'){brandSelector();return}
  if(k==='trans'){transmissionHome();return}
- if(k==='search'){closeDetail();setV3Active('search');setTimeout(()=>{q.focus();q.scrollIntoView({behavior:'smooth',block:'center'})},80);return}
+ if(k==='search'){openSpotlight();return}
  if(k==='engines'){setV3Active('engines');openCRBC();window.scrollTo({top:0,behavior:'smooth'});return}
 }
 
 
 if(!location.hash)brandSelector();
 restoreRoute();
-</script><nav class="v3dock" id="v3dock" aria-label="Glavna navigacija">
+</script><div class="searchOverlay" id="searchOverlay" onclick="if(event.target===this)closeSpotlight()"><div class="spotlight"><div class="spotHead"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><input id="spotInput" class="spotInput" placeholder="Pretraži vozilo, motor, menjač…" autocomplete="off"><button class="spotClose" onclick="closeSpotlight()" aria-label="Zatvori">×</button></div><div class="spotResults" id="spotResults"></div></div></div><nav class="v3dock" id="v3dock" aria-label="Glavna navigacija">
 <button class="v3nav active" data-v3="models" onclick="v3Go('models')"><svg viewBox="0 0 24 24"><path d="M3 14l2-5.5A2 2 0 0 1 6.9 7h10.2A2 2 0 0 1 19 8.5L21 14v5h-2v-2H5v2H3z"/><path d="M5 13h14M7 14.5h.01M17 14.5h.01"/></svg><span>Vozila</span></button>
 <button class="v3nav" data-v3="engines" onclick="v3Go('engines')"><svg viewBox="0 0 24 24"><path d="M5 8h11l3 3v6H7l-2-2z"/><path d="M8 8V5h5v3M19 12h2v4h-2M5 11H3v5h2"/></svg><span>Motori</span></button>
 <button class="v3nav" data-v3="trans" onclick="v3Go('trans')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 4v5M12 15v5M4 12h5M15 12h5"/></svg><span>Menjači</span></button>
