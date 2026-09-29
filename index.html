@@ -37,6 +37,47 @@ q.addEventListener('input',render);document.querySelectorAll('.tab').forEach(b=>
 
 
 const brandHome=document.querySelector('#brandHome'),legacyHero=document.querySelector('#legacyHero'),legacyTabs=document.querySelector('#legacyTabs');
+
+const AUDI_MODELS=[
+ ['A1','8X','2010–2018','PQ25','Petrol / Diesel'],
+ ['A1','GB','2018–2026','MQB A0','Petrol'],
+ ['A3','8P','2010–2013','PQ35','Petrol / Diesel'],
+ ['A3','8V','2012–2020','MQB','Petrol / Diesel / PHEV'],
+ ['A3','8Y','2020–2026','MQB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['A4','B8 / 8K','2010–2015','MLB','Petrol / Diesel'],
+ ['A4','B9 / 8W','2015–2024','MLB Evo','Petrol / Diesel / MHEV'],
+ ['A5','8T / 8F','2010–2016','MLB','Petrol / Diesel'],
+ ['A5','F5','2016–2024','MLB Evo','Petrol / Diesel / MHEV'],
+ ['A5','B10','2024–2026','PPC','Petrol / Diesel / MHEV'],
+ ['A6','C7 / 4G','2011–2018','MLB','Petrol / Diesel / Hybrid'],
+ ['A6','C8 / 4K','2018–2025','MLB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['A6 e-tron','GH','2024–2026','PPE','EV'],
+ ['A7 Sportback','4G','2010–2018','MLB','Petrol / Diesel'],
+ ['A7 Sportback','4K','2018–2025','MLB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['A8','D4 / 4H','2010–2017','MLB','Petrol / Diesel / Hybrid'],
+ ['A8','D5 / 4N','2017–2026','MLB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['Q2','GA','2016–2026','MQB','Petrol / Diesel'],
+ ['Q3','8U','2011–2018','PQ35','Petrol / Diesel'],
+ ['Q3','F3','2018–2025','MQB','Petrol / Diesel / PHEV'],
+ ['Q3','FJ','2025–2026','MQB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['Q4 e-tron','F4','2021–2026','MEB','EV'],
+ ['Q5','8R','2010–2017','MLB','Petrol / Diesel / Hybrid'],
+ ['Q5','FY','2017–2024','MLB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['Q5','GU','2024–2026','PPC','Petrol / Diesel / MHEV / PHEV'],
+ ['Q6 e-tron','GF','2024–2026','PPE','EV'],
+ ['Q7','4L','2010–2015','PL71','Petrol / Diesel'],
+ ['Q7','4M','2015–2026','MLB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['Q8','4M8','2018–2026','MLB Evo','Petrol / Diesel / MHEV / PHEV'],
+ ['e-tron / Q8 e-tron','GE','2018–2025','MLB Evo EV','EV'],
+ ['e-tron GT','FW','2021–2026','J1','EV'],
+ ['TT','8J','2010–2014','PQ35','Petrol / Diesel'],
+ ['TT','8S / FV','2014–2023','MQB','Petrol / Diesel'],
+ ['R8','42','2010–2015','MSS','Petrol'],
+ ['R8','4S','2015–2024','MSS II','Petrol']
+];
+function audiCard(m){return '<article class="card"><div class="title">'+m[0]+'</div><div class="meta">'+m[1]+' • '+m[2]+'</div><div class="tags"><span class="tag">'+m[3]+'</span><span class="tag">'+m[4]+'</span></div></article>'}
+function renderAudi(){count.textContent=AUDI_MODELS.length+' generacija';list.innerHTML=AUDI_MODELS.map(audiCard).join('')}
+
 const VAG_BRANDS=[
  {id:'vw',name:'Volkswagen',logo:'<svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="29"/><path d="M17 19l19 38 19-38M24 19l12 24 12-24M18 43h36"/></svg>'},
  {id:'audi',name:'Audi',cls:'audi',logo:'<svg viewBox="0 0 120 48"><circle cx="25" cy="24" r="16"/><circle cx="48" cy="24" r="16"/><circle cx="71" cy="24" r="16"/><circle cx="94" cy="24" r="16"/></svg>'},
@@ -53,6 +94,7 @@ function openBrand(id){
  localStorage.setItem('kashoBrand',id);brandHome.classList.add('hidden');legacyHero.classList.remove('hidden');legacyTabs.classList.add('hidden');count.classList.remove('hidden');list.classList.remove('hidden');
  const b=VAG_BRANDS.find(x=>x.id===id);legacyHero.querySelector('h1').textContent=b.name;legacyHero.querySelector('p').textContent='Modeli • evropsko tržište';
  if(id==='vw'){view='models';render();count.textContent=count.textContent.replace(' rezultata',' modela');}
+ else if(id==='audi'){renderAudi();}
  else{count.textContent='0 modela';list.innerHTML='<div class="empty">Modeli za '+b.name+' biće dodati u sledećoj fazi baze.</div>'}
  legacyHero.insertAdjacentHTML('afterbegin','<button class="brandBack" onclick="brandSelector()">‹ Marke</button>');
  window.scrollTo(0,0)
