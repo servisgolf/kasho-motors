@@ -96,7 +96,7 @@ function openBrand(id){
  if(id==='vw'){view='models';render();count.textContent=count.textContent.replace(' rezultata',' modela');}
  else if(id==='audi'){renderAudi();}
  else{count.textContent='0 modela';list.innerHTML='<div class="empty">Modeli za '+b.name+' biće dodati u sledećoj fazi baze.</div>'}
- legacyHero.insertAdjacentHTML('afterbegin','<button class="brandBack" onclick="brandSelector()">‹ Marke</button>');
+ let back=legacyHero.querySelector('.brandBack');if(!back)legacyHero.insertAdjacentHTML('afterbegin','<button class="brandBack" onclick="brandSelector()">‹ Marke</button>');
  window.scrollTo(0,0)
 }
 
