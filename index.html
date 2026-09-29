@@ -100,7 +100,7 @@ const VAG_BRANDS=[
 function brandSelector(){
  localStorage.removeItem('kashoBrand');history.replaceState(null,'',location.pathname+location.search);
  detail.classList.add('hidden');home.classList.remove('hidden');brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');legacyTabs.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
- brandHome.innerHTML='<section class="brandIntro"><h1>Vozila</h1><p>Izaberi marku vozila.</p><div class="brandGrid">'+VAG_BRANDS.map(b=>'<button class="brandCard" onclick="openBrand(\''+b.id+'\')"><div class="brandLogo '+(b.cls||'')+'">'+b.logo+'</div><div class="brandName">'+b.name+'</div></button>').join('')+'</div></section>';setV3Active('models');window.scrollTo(0,0)
+ brandHome.innerHTML='<section class="brandIntro"><h1>Vozila</h1><p>Izaberi marku vozila.</p><div class="brandGrid">'+VAG_BRANDS.map(b=>'<button class="brandCard" onclick="openBrand(\''+b.id+'\')"><div class="brandLogo '+(b.cls||'')+'"><img src="'+b.logo+'" alt="'+b.name+'"></div><div class="brandName">'+b.name+'</div></button>').join('')+'</div></section>';setV3Active('models');window.scrollTo(0,0)
 }
 function openBrand(id){
  localStorage.setItem('kashoBrand',id);brandHome.classList.add('hidden');legacyHero.classList.remove('hidden');legacyTabs.classList.add('hidden');count.classList.remove('hidden');list.classList.remove('hidden');
