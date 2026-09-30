@@ -30,6 +30,8 @@ body{padding-bottom:118px}
 .spotHead{display:grid;grid-template-columns:27px 1fr 34px;gap:9px;align-items:center;padding:14px 14px;border-bottom:1px solid #292f37}.spotHead svg{width:23px;height:23px;fill:none;stroke:#8f99a7;stroke-width:1.8;stroke-linecap:round}.spotInput{width:100%;border:0;outline:0;background:transparent;color:#fff;font:inherit;font-size:17px}.spotInput::placeholder{color:#77818e}.spotClose{appearance:none;border:0;background:#282e36;color:#b9c1cc;width:32px;height:32px;border-radius:50%;font-size:20px;line-height:30px}
 .spotResults{max-height:min(55vh,520px);overflow:auto;padding:8px}.spotHint{padding:18px 14px;color:#7f8996;font-size:13px}.spotResult{appearance:none;width:100%;border:0;background:transparent;color:#fff;text-align:left;border-radius:15px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.spotResult:active{background:#20252c}.spotTitle{font-size:15px;font-weight:800}.spotSub{font-size:12px;color:#8f99a7;margin-top:4px}.spotType{font-size:9px;font-weight:850;letter-spacing:.8px;color:#ef4444;background:#2a181b;border:1px solid #432127;padding:5px 7px;border-radius:7px}.spotEmpty{padding:28px 14px;text-align:center;color:#7f8996;font-size:13px}
 .homeBrand{appearance:none;border:0;background:transparent;color:inherit;padding:0;margin:0;text-align:left;cursor:pointer}.homeBrand:active{opacity:.72}.logoBrand{display:flex;align-items:center;width:178px;height:54px;overflow:visible}.kashoLogoImg{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}@media(max-width:430px){.logoBrand{width:164px;height:50px}}
+
+.modelFamilyCard{cursor:pointer}.modelFamilyCard .familyCount{margin-top:8px;color:#7f8996;font-size:11px;font-weight:700}.generationHead{display:flex;align-items:center;gap:12px;margin:6px 0 16px}.generationHead h1{font-size:25px;margin:0}.generationGrid{display:grid;gap:10px}.generationCard{appearance:none;width:100%;text-align:left;border:1px solid #292f37;background:#14181d;color:#fff;border-radius:17px;padding:16px;cursor:pointer}.generationCard:active{background:#181d23}.generationTop{display:flex;align-items:center;justify-content:space-between;gap:12px}.generationName{font-size:17px;font-weight:850}.generationYears{font-size:12px;color:#aeb6c2}.generationMeta{font-size:12px;color:#7f8996;margin-top:7px}.generationArrow{color:#ef4444;font-size:20px}
 </style></head><body><div class="wrap"><header><button class="brand homeBrand logoBrand" type="button" onclick="goHome()" aria-label="Početna"><img class="kashoLogoImg" src="assets/kasho-tech-logo.png?v=1" alt="KASHO TECH"></button><div class="pill">0.1 • VW EU</div></header><div id="home"><div id="brandHome"></div><section class="hero" id="legacyHero"><h1>Servisna baza</h1><p>Pretraži model, platformu, oznaku ili menjač.</p><input id="q" class="search" placeholder="npr. Golf VII, MQB, 0GC, DQ381…" autocomplete="off"></section><div class="tabs" id="legacyTabs"><button class="tab active" data-view="models">Vozila</button><button class="tab" data-view="trans">Menjači</button><button class="tab" data-view="fav">★ Favorites</button></div><div id="count" class="count"></div><main id="list"></main></div><main id="detail" class="hidden"></main></div><div class="footer">KASHO TECH 0.1 • offline-ready</div><script src="data.js"></script><script src="profiles.js"></script><script src="crbc.js"></script><script>
 let view='models';const q=document.querySelector('#q'),list=document.querySelector('#list'),count=document.querySelector('#count'),home=document.querySelector('#home'),detail=document.querySelector('#detail');
 const fav=()=>JSON.parse(localStorage.getItem('kashoFav')||'[]');function key(x){return JSON.stringify(x)}function toggle(x){let a=fav(),k=key(x);a=a.includes(k)?a.filter(v=>v!==k):[...a,k];localStorage.setItem('kashoFav',JSON.stringify(a));render()}
@@ -88,8 +90,35 @@ const AUDI_MODELS=[
  ['R8','42','2010–2015','MSS','Petrol'],
  ['R8','4S','2015–2024','MSS II','Petrol']
 ];
-function audiCard(m){return '<article class="card"><div class="title">'+m[0]+'</div><div class="meta">'+m[1]+' • '+m[2]+'</div><div class="tags"><span class="tag">'+m[3]+'</span><span class="tag">'+m[4]+'</span></div></article>'}
-function renderAudi(){count.textContent=AUDI_MODELS.length+' generacija';list.innerHTML=AUDI_MODELS.map(audiCard).join('')}
+function groupedModels(brand){
+ const src=brand==='audi'?AUDI_MODELS:KASHO_DATA.Models;
+ const map={};
+ src.forEach(m=>{const n=brand==='audi'?m[0]:m.Model;(map[n]||(map[n]=[])).push(m)});
+ return Object.entries(map)
+}
+function renderBrandFamilies(brand){
+ const groups=groupedModels(brand);count.textContent=groups.length+' modela';
+ list.innerHTML=groups.map(([name,gens])=>'<article class="card modelFamilyCard" onclick="openModelFamily(\''+brand+'\',\''+name.replace(/'/g,"\\'")+'\')"><div class="title">'+name+' <span class="accent">›</span></div><div class="familyCount">'+gens.length+' '+(gens.length===1?'generacija':'generacije')+'</div></article>').join('')
+}
+function openModelFamily(brand,name){
+ const groups=groupedModels(brand),found=groups.find(x=>x[0]===name);if(!found)return;
+ const gens=found[1],brandName=brand==='audi'?'Audi':'Volkswagen';
+ brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
+ brandHome.innerHTML='<section><div class="generationHead"><button class="brandBack" onclick="openBrand(\''+brand+'\')">‹ '+brandName+'</button><h1>'+name+'</h1></div><div class="generationGrid">'+gens.map((g,i)=>generationCard(brand,g,i)).join('')+'</div></section>';
+ setV3Active('models');window.scrollTo(0,0)
+}
+function generationCard(brand,g,i){
+ if(brand==='audi')return '<button class="generationCard" onclick="openGeneration(\'audi\',\''+g[0].replace(/'/g,"\\'")+'\','+i+')"><div class="generationTop"><div class="generationName">'+g[1]+'</div><span class="generationArrow">›</span></div><div class="generationYears">'+g[2]+'</div><div class="generationMeta">'+g[3]+' • '+g[4]+'</div></button>';
+ const type=g['Factory/Type code']||'';return '<button class="generationCard" onclick="openGeneration(\'vw\',\''+g.Model.replace(/'/g,"\\'")+'\','+i+')"><div class="generationTop"><div class="generationName">'+g.Generation+(type?' / '+type:'')+'</div><span class="generationArrow">›</span></div><div class="generationYears">'+g.From+'–'+g.To+'</div><div class="generationMeta">'+g.Platform+' • '+g.Powertrain+'</div></button>'
+}
+function openGeneration(brand,name,i){
+ const found=groupedModels(brand).find(x=>x[0]===name);if(!found||!found[1][i])return;const g=found[1][i];
+ if(brand==='vw'&&name==='Golf'&&String(g.Generation).toUpperCase()==='VII'){openGolf7();return}
+ brandHome.classList.add('hidden');home.classList.add('hidden');detail.classList.remove('hidden');const brandName=brand==='audi'?'Audi':'Volkswagen';
+ const code=brand==='audi'?g[1]:(g.Generation+' / '+(g['Factory/Type code']||''));const years=brand==='audi'?g[2]:(g.From+'–'+g.To);const platform=brand==='audi'?g[3]:g.Platform;const power=brand==='audi'?g[4]:g.Powertrain;
+ detail.innerHTML='<div class="detailHead"><button class="back" onclick="openModelFamily(\''+brand+'\',\''+name.replace(/'/g,"\\'")+'\')">‹ '+name+'</button><div><h1>'+name+'</h1><div class="meta">'+code+' • '+years+'</div></div></div><div class="sectionTitle">Pregled</div><section class="panel"><div class="title">'+platform+'</div><div class="meta">'+power+'</div></section><div class="status warn">Detaljan tehnički profil ove generacije biće dodat u sledećoj fazi baze.</div>';
+ setV3Active('models');window.scrollTo(0,0)
+}
 
 const VAG_BRANDS=[
  {id:'vw',name:'Volkswagen',logo:'assets/volkswagen.png?v=1'},
@@ -106,8 +135,8 @@ function brandSelector(){
 function openBrand(id){
  localStorage.setItem('kashoBrand',id);brandHome.classList.add('hidden');legacyHero.classList.remove('hidden');legacyTabs.classList.add('hidden');count.classList.remove('hidden');list.classList.remove('hidden');
  const b=VAG_BRANDS.find(x=>x.id===id);legacyHero.querySelector('h1').textContent=b.name;legacyHero.querySelector('p').textContent='Modeli • evropsko tržište';
- if(id==='vw'){view='models';render();count.textContent=count.textContent.replace(' rezultata',' modela');}
- else if(id==='audi'){renderAudi();}
+ if(id==='vw'){renderBrandFamilies('vw');}
+ else if(id==='audi'){renderBrandFamilies('audi');}
  else{count.textContent='0 modela';list.innerHTML='<div class="empty">Modeli za '+b.name+' biće dodati u sledećoj fazi baze.</div>'}
  let back=legacyHero.querySelector('.brandBack');if(!back)legacyHero.insertAdjacentHTML('afterbegin','<button class="brandBack" onclick="brandSelector()">‹ Marke</button>');
  window.scrollTo(0,0)
