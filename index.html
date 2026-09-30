@@ -190,6 +190,24 @@ function openBrand(id){
 }
 
 
+const ENGINE_FAMILIES=[
+ {id:'ea288',name:'EA288',codes:'CRBC',meta:'TDI • Common Rail',layout:'Poprečni • MQB',profiles:'1 profil'},
+ {id:'ea189',name:'EA189',codes:'U pripremi',meta:'TDI • Common Rail',layout:'Poprečni / uzdužni',profiles:'Baza se dopunjuje'},
+ {id:'ea211',name:'EA211',codes:'U pripremi',meta:'TSI • Benzin',layout:'Poprečni • MQB / MQB A0',profiles:'Baza se dopunjuje'},
+ {id:'ea888',name:'EA888',codes:'U pripremi',meta:'TSI / TFSI • Benzin',layout:'Poprečni / uzdužni',profiles:'Baza se dopunjuje'}
+];
+function engineHome(){
+ localStorage.removeItem('kashoRoute');history.replaceState(null,'',location.pathname+location.search);
+ detail.classList.add('hidden');home.classList.remove('hidden');brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');legacyTabs.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
+ brandHome.innerHTML='<section class="transIntro"><h1>Motori</h1><p>Izaberi porodicu motora.</p><div class="transGrid">'+ENGINE_FAMILIES.map(t=>'<button class="transCard" onclick="openEngineFamily(\''+t.id+'\')"><div><div class="transCode">'+t.name+' <span class="transArrow">›</span></div><div class="transPart">'+t.codes+'</div></div><div><div class="transMeta">'+t.meta+'</div><span class="transBadge">'+t.layout+'</span></div></button>').join('')+'</div></section>';
+ setV3Active('engines');animatePage(brandHome);window.scrollTo(0,0)
+}
+function openEngineFamily(id){
+ const t=ENGINE_FAMILIES.find(x=>x.id===id);if(!t)return;
+ if(id==='ea288'){window.scrollTo(0,0);home.classList.add('hidden');detail.classList.remove('hidden');detail.innerHTML='<div class="detailHead"><button class="back" onclick="engineHome()">‹ Motori</button><div><h1>EA288</h1><div class="meta">TDI • Common Rail</div></div></div><div class="sectionTitle">Oznake motora</div><div class="transGrid"><button class="transCard" onclick="openCRBC()"><div><div class="transCode">CRBC <span class="transArrow">›</span></div><div class="transPart">2.0 TDI • 1968 cm³</div></div><div><div class="transMeta">110 kW • 320 Nm</div><span class="transBadge">Golf VII • MQB</span></div></button></div>';setV3Active('engines');animatePage(detail);return}
+ window.scrollTo(0,0);home.classList.add('hidden');detail.classList.remove('hidden');detail.innerHTML='<div class="detailHead"><button class="back" onclick="engineHome()">‹ Motori</button><div><h1>'+t.name+'</h1><div class="meta">'+t.meta+'</div></div></div><div class="status warn">Oznake i tehnički profili za '+t.name+' biće dodavani kako ih verifikujemo.</div>';setV3Active('engines');animatePage(detail)
+}
+
 const TRANS_FAMILIES=[
  {id:'dq200',name:'DQ200',codes:'0AM / 0CW',meta:'7-stepeni DSG • suvo dvostruko kvačilo',drive:'Poprečni • FWD'},
  {id:'dq250',name:'DQ250',codes:'02E / 0D9',meta:'6-stepeni DSG • mokro dvostruko kvačilo',drive:'Poprečni • FWD / AWD'},
@@ -250,7 +268,7 @@ function v3Go(k){
  if(k==='models'){brandSelector();return}
  if(k==='trans'){transmissionHome();return}
  if(k==='search'){openSpotlight();return}
- if(k==='engines'){setV3Active('engines');openCRBC();window.scrollTo({top:0,behavior:'smooth'});return}
+ if(k==='engines'){engineHome();return}
 }
 
 
