@@ -215,20 +215,17 @@ function openTransmission(id){
 
 let searchOverlay,spotInput,spotResults;
 function getSpotlightEls(){searchOverlay=document.querySelector('#searchOverlay');spotInput=document.querySelector('#spotInput');spotResults=document.querySelector('#spotResults')}
+function normalizeSearch(v){return String(v||'').toLowerCase().replace(/[.\-_/]+/g,' ').replace(/\s+/g,' ').trim()}
+const ENGINE_SEARCH=[
+ {code:'CRBC',name:'2.0 TDI',family:'EA288',power:'110 kW',models:'Golf VII',go:'crbc'}
+];
 function searchIndex(){
  let a=[];
- (KASHO_DATA.Models||[]).forEach(x=>{let v=Object.values(x).filter(Boolean).map(String);a.push({type:'VOZILO',title:v[0]||'Volkswagen',sub:v.slice(1,4).join(' • '),terms:v.join(' '),go:isGolf7(x)?'golf7':null})});
- [
-  ['dq200','DQ200','0AM / 0CW','7-stepeni DSG • suvo dvostruko kvačilo','Poprečni • FWD'],
-  ['dq250','DQ250','02E / 0D9','6-stepeni DSG • mokro dvostruko kvačilo','Poprečni • FWD / AWD'],
-  ['dq381','DQ381','0GC','7-stepeni DSG • mokro dvostruko kvačilo','Poprečni • FWD / AWD'],
-  ['dq500','DQ500','0BH / 0BT / 0DL','7-stepeni DSG • mokro dvostruko kvačilo','Poprečni • FWD / AWD'],
-  ['dq400e','DQ400e','0DD','6-stepeni DSG • PHEV','Poprečni • hibrid'],
-  ['dl501','DL501','0B5','7-stepeni S tronic • mokro dvostruko kvačilo','Uzdužni • quattro'],
-  ['dl382','DL382','0CK / 0CL / 0CJ / 0HL','7-stepeni S tronic • mokro dvostruko kvačilo','Uzdužni • FWD / quattro']
- ].forEach(t=>a.push({type:'MENJAČ',title:t[1],sub:t[2]+' • '+t[3],terms:t.join(' '),go:'trans:'+t[0]}));
- a.push({type:'MOTOR',title:'CRBC',sub:'2.0 TDI • EA288 • 110 kW',terms:'CRBC 2.0 TDI EA288 110 kW Golf VII',go:'crbc'});a.push({type:'VOZILO',title:'Volkswagen ID.3',sub:'MEB • EV • RWD',terms:'Volkswagen ID3 ID.3 MEB EV electric 45 58 77 kWh',go:'id3'});
- AUDI_MODELS.forEach(m=>a.push({type:'VOZILO',title:'Audi '+m[0],sub:m[1]+' • '+m[2]+' • '+m[3],terms:m.join(' '),go:null}));
+ (KASHO_DATA.Models||[]).forEach(x=>{let v=Object.values(x).filter(Boolean).map(String),isId3=x.Model==='ID.3';a.push({type:'VOZILO',title:'Volkswagen '+(x.Model||''),sub:[x.Generation,x['Factory/Type code'],x.Platform].filter(Boolean).join(' • '),terms:v.join(' ')+' Volkswagen VW',go:isGolf7(x)?'golf7':(isId3?'id3':null)})});
+ (KASHO_DATA.Transmissions||[]).forEach(t=>{let v=Object.values(t).filter(Boolean).map(String),fam=String(t.Family||''),id=fam.toLowerCase();let go=null;if(id.includes('dq200'))go='trans:dq200';else if(id.includes('dq250'))go='trans:dq250';else if(id.includes('dq381'))go='trans:dq381';else if(id.includes('dq500'))go='trans:dq500';else if(id.includes('dq400'))go='trans:dq400e';a.push({type:'MENJAČ',title:fam||t.Code||'Menjač',sub:[t.Code,t.Speeds,t['Clutch/Type']].filter(Boolean).join(' • '),terms:v.join(' ')+' DSG S tronic gearbox transmission menjac',go:go})});
+ TRANS_FAMILIES.forEach(t=>{if(!a.some(x=>x.type==='MENJAČ'&&normalizeSearch(x.title)===normalizeSearch(t.name)))a.push({type:'MENJAČ',title:t.name,sub:t.codes+' • '+t.meta,terms:[t.name,t.codes,t.meta,t.drive,'DSG S tronic gearbox transmission menjac'].join(' '),go:'trans:'+t.id})});
+ ENGINE_SEARCH.forEach(e=>a.push({type:'MOTOR',title:e.code,sub:e.name+' • '+e.family+' • '+e.power,terms:[e.code,e.name,e.family,e.power,e.models,'motor engine'].join(' '),go:e.go}));
+ AUDI_MODELS.forEach(m=>a.push({type:'VOZILO',title:'Audi '+m[0],sub:m[1]+' • '+m[2]+' • '+m[3],terms:m.join(' ')+' Audi',go:null}));
  return a
 }
 function openSpotlight(){
@@ -238,9 +235,9 @@ function openSpotlight(){
 }
 function closeSpotlight(){getSpotlightEls();if(!searchOverlay)return;searchOverlay.classList.remove('open');document.body.style.overflow='';if(spotInput)spotInput.blur()}
 function renderSpotlight(v){
- const term=v.trim().toLowerCase();
- if(!term){spotResults.innerHTML='<div class="spotHint">Počni da kucaš — npr. <b>DQ200</b>, <b>0GC</b>, <b>CRBC</b> ili <b>Golf VII</b>.</div>';return}
- const r=searchIndex().filter(x=>(x.title+' '+x.sub+' '+x.terms).toLowerCase().includes(term)).slice(0,12);
+ const term=normalizeSearch(v);
+ if(!term){spotResults.innerHTML='<div class="spotHint">Počni da kucaš — npr. <b>CRBC</b>, <b>DQ500</b>, <b>0BH</b>, <b>0GC</b> ili <b>Golf VII</b>.</div>';return}
+ const r=searchIndex().filter(x=>normalizeSearch(x.title+' '+x.sub+' '+x.terms).includes(term)).slice(0,16);
  spotResults.innerHTML=r.length?r.map((x,i)=>'<button class="spotResult" onclick="openSearchResult('+i+')"><div><div class="spotTitle">'+esc(x.title)+'</div><div class="spotSub">'+esc(x.sub)+'</div></div><span class="spotType">'+x.type+'</span></button>').join(''):'<div class="spotEmpty">Nema rezultata za „'+esc(v)+'“.</div>';
  window._spotResults=r
 }
