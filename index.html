@@ -162,9 +162,10 @@ function groupedModels(brand){
  src.forEach(m=>{const n=brand==='audi'?m[0]:m.Model;(map[n]||(map[n]=[])).push(m)});
  return Object.entries(map)
 }
-function renderBrandFamilies(brand){
- const groups=groupedModels(brand);count.textContent=groups.length+' modela';
- list.innerHTML=groups.map(([name,gens])=>'<article class="card modelFamilyCard" onclick="openModelFamily(\''+brand+'\',\''+name.replace(/'/g,"\\'")+'\')"><div class="title">'+name+' <span class="accent">›</span></div><div class="familyCount">'+gens.length+' '+(gens.length===1?'generacija':'generacije')+'</div></article>').join('')
+function renderBrandFamilies(brand,term=''){
+ const all=groupedModels(brand),qv=normalizeSearch(term),groups=qv?all.filter(([name,gens])=>normalizeSearch(name+' '+gens.map(g=>brand==='audi'?g.join(' '):Object.values(g).join(' ')).join(' ')).includes(qv)):all;
+ count.textContent=groups.length+' modela';
+ list.innerHTML=groups.length?groups.map(([name,gens])=>'<article class="card modelFamilyCard" onclick="openModelFamily(\''+brand+'\',\''+name.replace(/'/g,"\\'")+'\')"><div class="title">'+name+' <span class="accent">›</span></div><div class="familyCount">'+gens.length+' '+(gens.length===1?'generacija':'generacije')+'</div></article>').join(''):'<div class="empty">Nema rezultata za <b>'+term+'</b>.</div>'
 }
 function openModelFamily(brand,name){
  const groups=groupedModels(brand),found=groups.find(x=>x[0]===name);if(!found)return;
@@ -206,6 +207,7 @@ function openBrand(id){
  else if(id==='audi'){renderBrandFamilies('audi');}
  else{count.textContent='0 modela';list.innerHTML='<div class="empty">Modeli za '+b.name+' biće dodati u sledećoj fazi baze.</div>'}
  let back=legacyHero.querySelector('.brandBack');if(!back)legacyHero.insertAdjacentHTML('afterbegin','<button class="brandBack" onclick="brandSelector()">‹ Marke</button>');
+ const q=document.querySelector('#q');if(q){q.value='';q.placeholder='Kucaj model — npr. ID, Golf, Passat…';q.oninput=()=>{const bid=localStorage.getItem('kashoBrand');if(bid==='vw'||bid==='audi')renderBrandFamilies(bid,q.value)}}
  animatePage(legacyHero);animatePage(list);window.scrollTo(0,0)
 }
 
@@ -237,10 +239,14 @@ const TRANS_FAMILIES=[
  {id:'dl501',name:'DL501',codes:'0B5',meta:'7-stepeni S tronic • mokro dvostruko kvačilo',drive:'Uzdužni • quattro'},
  {id:'dl382',name:'DL382',codes:'0CK / 0CL / 0CJ / 0HL',meta:'7-stepeni S tronic • mokro dvostruko kvačilo',drive:'Uzdužni • FWD / quattro'}
 ];
+function renderTransmissionCards(term=''){
+ const el=document.querySelector('#transQuickGrid');if(!el)return;const qv=normalizeSearch(term),rows=qv?TRANS_FAMILIES.filter(t=>normalizeSearch(t.name+' '+t.codes+' '+t.meta+' '+t.drive).includes(qv)):TRANS_FAMILIES;
+ el.innerHTML=rows.length?rows.map(t=>'<button class="transCard" onclick="openTransmission(\''+t.id+'\')"><div><div class="transCode">'+t.name+' <span class="transArrow">›</span></div><div class="transPart">'+t.codes+'</div></div><div><div class="transMeta">'+t.meta+'</div><span class="transBadge">'+t.drive+'</span></div></button>').join(''):'<div class="empty">Nema rezultata za <b>'+term+'</b>.</div>'
+}
 function transmissionHome(){
  localStorage.removeItem('kashoRoute');history.replaceState(null,'',location.pathname+location.search);
  detail.classList.add('hidden');home.classList.remove('hidden');brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');legacyTabs.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
- brandHome.innerHTML='<section class="transIntro"><h1>Menjači</h1><p>Izaberi porodicu menjača.</p><div class="transGrid">'+TRANS_FAMILIES.map(t=>'<button class="transCard" onclick="openTransmission(\''+t.id+'\')"><div><div class="transCode">'+t.name+' <span class="transArrow">›</span></div><div class="transPart">'+t.codes+'</div></div><div><div class="transMeta">'+t.meta+'</div><span class="transBadge">'+t.drive+'</span></div></button>').join('')+'</div></section>';
+ brandHome.innerHTML='<section class="transIntro"><h1>Menjači</h1><p>Izaberi porodicu menjača.</p><input id="transQuick" class="search" placeholder="Kucaj — npr. DQ, DQ5, 0B, 0GC…" autocomplete="off"><div id="transQuickGrid" class="transGrid"></div></section>';renderTransmissionCards('');const tq=document.querySelector('#transQuick');if(tq)tq.oninput=()=>renderTransmissionCards(tq.value);
  setV3Active('trans');animatePage(brandHome);window.scrollTo(0,0)
 }
 function openTransmission(id){
