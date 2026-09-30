@@ -103,7 +103,7 @@ function renderBrandFamilies(brand){
 function openModelFamily(brand,name){
  const groups=groupedModels(brand),found=groups.find(x=>x[0]===name);if(!found)return;
  const gens=found[1],brandName=brand==='audi'?'Audi':'Volkswagen';
- brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
+ detail.classList.add('hidden');home.classList.remove('hidden');brandHome.classList.remove('hidden');legacyHero.classList.add('hidden');legacyTabs.classList.add('hidden');count.classList.add('hidden');list.classList.add('hidden');
  brandHome.innerHTML='<section><div class="generationHead"><button class="brandBack" onclick="openBrand(\''+brand+'\')">‹ '+brandName+'</button><h1>'+name+'</h1></div><div class="generationGrid">'+gens.map((g,i)=>generationCard(brand,g,i)).join('')+'</div></section>';
  setV3Active('models');window.scrollTo(0,0)
 }
