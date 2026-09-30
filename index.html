@@ -35,12 +35,12 @@ body{padding-bottom:118px}
 
 @keyframes kashoPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes kashoCardIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.kashoPageIn{animation:kashoPageIn .20s cubic-bezier(.2,.7,.25,1) both}
-.kashoPageIn .brandCard,.kashoPageIn .card,.kashoPageIn .generationCard,.kashoPageIn .transCard{animation:kashoCardIn .22s cubic-bezier(.2,.7,.25,1) both}
-.kashoPageIn .brandCard:nth-child(2),.kashoPageIn .card:nth-child(2),.kashoPageIn .generationCard:nth-child(2),.kashoPageIn .transCard:nth-child(2){animation-delay:.025s}
-.kashoPageIn .brandCard:nth-child(3),.kashoPageIn .card:nth-child(3),.kashoPageIn .generationCard:nth-child(3),.kashoPageIn .transCard:nth-child(3){animation-delay:.05s}
-.kashoPageIn .brandCard:nth-child(4),.kashoPageIn .card:nth-child(4),.kashoPageIn .generationCard:nth-child(4),.kashoPageIn .transCard:nth-child(4){animation-delay:.075s}
-.kashoPageIn .brandCard:nth-child(n+5),.kashoPageIn .card:nth-child(n+5),.kashoPageIn .generationCard:nth-child(n+5),.kashoPageIn .transCard:nth-child(n+5){animation-delay:.09s}
+.kashoPageIn{animation:kashoPageIn .32s cubic-bezier(.2,.7,.25,1) both}
+.kashoPageIn .brandCard,.kashoPageIn .card,.kashoPageIn .generationCard,.kashoPageIn .transCard{animation:kashoCardIn .34s cubic-bezier(.2,.7,.25,1) both}
+.kashoPageIn .brandCard:nth-child(2),.kashoPageIn .card:nth-child(2),.kashoPageIn .generationCard:nth-child(2),.kashoPageIn .transCard:nth-child(2){animation-delay:.04s}
+.kashoPageIn .brandCard:nth-child(3),.kashoPageIn .card:nth-child(3),.kashoPageIn .generationCard:nth-child(3),.kashoPageIn .transCard:nth-child(3){animation-delay:.08s}
+.kashoPageIn .brandCard:nth-child(4),.kashoPageIn .card:nth-child(4),.kashoPageIn .generationCard:nth-child(4),.kashoPageIn .transCard:nth-child(4){animation-delay:.12s}
+.kashoPageIn .brandCard:nth-child(n+5),.kashoPageIn .card:nth-child(n+5),.kashoPageIn .generationCard:nth-child(n+5),.kashoPageIn .transCard:nth-child(n+5){animation-delay:.15s}
 @media(prefers-reduced-motion:reduce){.kashoPageIn,.kashoPageIn .brandCard,.kashoPageIn .card,.kashoPageIn .generationCard,.kashoPageIn .transCard{animation:none!important}}
 </style></head><body><div class="wrap"><header><button class="brand homeBrand logoBrand" type="button" onclick="goHome()" aria-label="Početna"><img class="kashoLogoImg" src="assets/kasho-tech-logo.png?v=1" alt="KASHO TECH"></button><div class="pill">0.1 • VW EU</div></header><div id="home"><div id="brandHome"></div><section class="hero" id="legacyHero"><h1>Servisna baza</h1><p>Pretraži model, platformu, oznaku ili menjač.</p><input id="q" class="search" placeholder="npr. Golf VII, MQB, 0GC, DQ381…" autocomplete="off"></section><div class="tabs" id="legacyTabs"><button class="tab active" data-view="models">Vozila</button><button class="tab" data-view="trans">Menjači</button><button class="tab" data-view="fav">★ Favorites</button></div><div id="count" class="count"></div><main id="list"></main></div><main id="detail" class="hidden"></main></div><div class="footer">KASHO TECH 0.1 • offline-ready</div><script src="data.js"></script><script src="profiles.js"></script><script src="crbc.js"></script><script>
 let view='models';const q=document.querySelector('#q'),list=document.querySelector('#list'),count=document.querySelector('#count'),home=document.querySelector('#home'),detail=document.querySelector('#detail');
@@ -103,7 +103,7 @@ const AUDI_MODELS=[
 
 function animatePage(el){
  if(!el)return;el.classList.remove('kashoPageIn');void el.offsetWidth;el.classList.add('kashoPageIn');
- setTimeout(()=>el.classList.remove('kashoPageIn'),360)
+ setTimeout(()=>el.classList.remove('kashoPageIn'),560)
 }
 
 function groupedModels(brand){
