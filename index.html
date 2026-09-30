@@ -281,7 +281,7 @@ function closeSpotlight(){getSpotlightEls();if(!searchOverlay)return;searchOverl
 function renderSpotlight(v){
  const term=normalizeSearch(v);
  if(!term){spotResults.innerHTML='<div class="spotHint">Počni da kucaš — npr. <b>CRBC</b>, <b>DQ500</b>, <b>0BH</b>, <b>0GC</b> ili <b>Golf VII</b>.</div>';return}
- const r=searchIndex().filter(x=>normalizeSearch(x.title+' '+x.sub+' '+x.terms).includes(term)).slice(0,16);
+ const score=x=>{const title=normalizeSearch(x.title),sub=normalizeSearch(x.sub),terms=normalizeSearch(x.terms),tokens=(title+' '+sub+' '+terms).split(' ');if(title===term)return 0;if(tokens.includes(term))return 1;if(title.startsWith(term))return 2;if(tokens.some(t=>t.startsWith(term)))return 3;if(sub.includes(term))return 4;return 5};const r=searchIndex().filter(x=>normalizeSearch(x.title+' '+x.sub+' '+x.terms).includes(term)).sort((a,b)=>score(a)-score(b)||(a.type==='MENJAČ'?-1:b.type==='MENJAČ'?1:0)).slice(0,16);
  spotResults.innerHTML=r.length?r.map((x,i)=>'<button class="spotResult" onclick="openSearchResult('+i+')"><div><div class="spotTitle">'+esc(x.title)+'</div><div class="spotSub">'+esc(x.sub)+'</div></div><span class="spotType">'+x.type+'</span></button>').join(''):'<div class="spotEmpty">Nema rezultata za „'+esc(v)+'“.</div>';
  window._spotResults=r
 }
