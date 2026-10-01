@@ -163,7 +163,7 @@ function groupedModels(brand){
  return Object.entries(map)
 }
 function renderBrandFamilies(brand,term=''){
- const all=groupedModels(brand),qv=normalizeSearch(term),groups=qv?all.filter(([name,gens])=>normalizeSearch(name+' '+gens.map(g=>brand==='audi'?g.join(' '):Object.values(g).join(' ')).join(' ')).includes(qv)):all;
+ const all=groupedModels(brand),qv=normalizeSearch(term),groups=qv?all.filter(([name,gens])=>{const model=normalizeSearch(name),hay=normalizeSearch(name+' '+gens.map(g=>brand==='audi'?g.join(' '):Object.values(g).join(' ')).join(' '));return model.startsWith(qv)||hay.split(' ').some(t=>t.startsWith(qv))||hay.includes(qv)}).sort((a,b)=>{const an=normalizeSearch(a[0]),bn=normalizeSearch(b[0]);const as=an.startsWith(qv)?0:1,bs=bn.startsWith(qv)?0:1;return as-bs||an.localeCompare(bn)}):all;
  count.textContent=groups.length+' modela';
  list.innerHTML=groups.length?groups.map(([name,gens])=>'<article class="card modelFamilyCard" onclick="openModelFamily(\''+brand+'\',\''+name.replace(/'/g,"\\'")+'\')"><div class="title">'+name+' <span class="accent">›</span></div><div class="familyCount">'+gens.length+' '+(gens.length===1?'generacija':'generacije')+'</div>'+((brand==='vw'&&(name==='Golf'||name==='ID.3'))?'<span class="contentStatus ready"><i class="dot"></i> Profil dostupan</span>':'<span class="contentStatus"><i class="dot"></i> U pripremi</span>')+'</article>').join(''):'<div class="empty">Nema rezultata za <b>'+term+'</b>.</div>'
 }
